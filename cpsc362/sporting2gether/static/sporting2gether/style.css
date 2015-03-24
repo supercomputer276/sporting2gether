@@ -1,0 +1,35 @@
+body {
+	background: #FAFAFA;
+}
+
+.siteheader {
+	background: #FDFDFD;
+	width: 100%;
+	height: 50px; /* make sure it matches the content's padding-top */
+	padding-top: 2px;
+	padding-left: 1em;
+	padding-right: 1em;
+	border-bottom: 2px solid #DADADA;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+
+.content {
+	padding-top: 50px; /* make sure it matches the height of the header par */
+}
+
+.sitefooter {
+	background: #BDBDBD;
+	width: 100%;
+	height: 75px;
+	padding-top: 2px;
+	padding-left: 1em;
+	padding-right: 1em;
+	border-top: 2px solid #DBDBDB;
+	position: fixed;
+	bottom: 0px;
+	left: 0;
+	z-index: 1;
+}

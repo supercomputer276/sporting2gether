@@ -1,0 +1,10 @@
+{% load staticfiles %}
+<html>
+	<head>
+		<title>Sporting 2gether :: {{ page_title }}</title>
+		<link rel="stylesheet" type="text/css" href="{% static 'sporting2gether/style.css' %}"/>
+	</head>
+	<body>
+		<div class="siteheader">
+		<p>Hello, header!</p>
+		</div>
