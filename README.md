@@ -8,6 +8,6 @@ From Robert: I still have minimal knowledge of how to work GIT and as such I may
 
 From Robert: I would like to apologize for the sudden new directory. I'm not sure how to remove it. Git is just a pain to use. Please ignore it. Thank you.
 
-To set up the database properly, once you've pulled the project, use:
-python manage.py makemigrations sporting2gether
+To set up the database properly, once you've pulled the project, use:<br/>
+python manage.py makemigrations sporting2gether<br/>
 python manage.py migrate
