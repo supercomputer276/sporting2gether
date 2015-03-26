@@ -7,3 +7,7 @@ For contributors: Please do not commit changes directly to the master branch. In
 From Robert: I still have minimal knowledge of how to work GIT and as such I may not be able to answer all questions. I'm still figuring this out myself. I'm working on instructions for getting stuff flowing which will be posted on Facebook, so stay tuned.
 
 From Robert: I would like to apologize for the sudden new directory. I'm not sure how to remove it. Git is just a pain to use. Please ignore it. Thank you.
+
+To set up the database properly, once you've pulled the project, use:
+python manage.py makemigrations sporting2gether
+python manage.py migrate
