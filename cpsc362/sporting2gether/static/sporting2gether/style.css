@@ -16,6 +16,31 @@ body {
 	z-index: 1;
 }
 
+.siteheader-logo {
+	float: left;
+	text-align: left;
+}
+
+.siteheader-login {
+	float: right;
+	text-align: right;
+	/*background: #B24400;*/
+	height: 70%;
+	width: 230px;
+	padding-top: 5px;
+	padding-bottom: 0px;
+	padding-right: 1em;
+	margin: 5px 1em;
+}
+
+.siteheader-search {
+	float: center;
+	text-align: center;
+	padding-top: 5px;
+	padding-bottom: 0px;
+	margin: 5px 1em;
+}
+
 .content {
 	padding-top: 50px; /* make sure it matches the height of the header par */
 }
