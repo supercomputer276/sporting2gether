@@ -45,3 +45,6 @@ class Event(models.Model):
 class Participation(models.Model):
 	event = models.ForeignKey(Event)
 	user = models.ForeignKey(Users)
+	
+	class Meta:
+		unique_together = (('event','user'),)
