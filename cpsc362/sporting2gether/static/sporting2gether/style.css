@@ -1,19 +1,20 @@
 body {
-	background: #FAFAFA;
+	background-color: #f7f7f7;
+	font-family:Arial;
 }
 
 .siteheader {
-	background: #FDFDFD;
+	/*background: #FDFDFD;*/
 	width: 100%;
-	height: 50px; /* make sure it matches the content's padding-top */
+	height: 20px; /* make sure it matches the content's padding-top */
 	padding-top: 2px;
 	padding-left: 1em;
 	padding-right: 1em;
-	border-bottom: 2px solid #DADADA;
+	/*border-bottom: 2px solid #DADADA;
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 1;
+	z-index: 1;*/
 }
 
 .siteheader-logo {
@@ -25,12 +26,14 @@ body {
 	float: right;
 	text-align: right;
 	/*background: #B24400;*/
-	height: 70%;
-	width: 230px;
-	padding-top: 5px;
+	/*background-color: #f7f7f7;*/
+	/*height: 70%;
+	width: 230px;*/
+	height:20px;
+	padding-top: 0px;
 	padding-bottom: 0px;
 	padding-right: 1em;
-	margin: 5px 1em;
+	margin: 0 1em;
 }
 
 .siteheader-search {
@@ -41,20 +44,57 @@ body {
 	margin: 5px 1em;
 }
 
+.menu {
+	background-color:#6d84b4;height:40px;width:auto;
+}
+
+.menu ul {
+	list-style:none;
+}
+
+.menu li {
+	float:left;
+	width:200px;
+	text-align:center;
+	line-height:40px;
+	color:#FFFFFF;
+}
+
+.menu a {
+	text-decoration:none;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+.menu a:hover {
+	background:#3b5998;
+}
+
 .content {
-	padding-top: 50px; /* make sure it matches the height of the header par */
+	/*padding-top: 50px; /* make sure it matches the height of the header par */
+	background-color: #d8dfea;
+	width: auto;
+	margin: 10px;
+	padding: 0.5em 1em;
 }
 
 .sitefooter {
-	background: #BDBDBD;
+	/*background: #BDBDBD;
 	width: 100%;
-	height: 75px;
+	height: 75px;*/
 	padding-top: 2px;
 	padding-left: 1em;
 	padding-right: 1em;
-	border-top: 2px solid #DBDBDB;
+	/*border-top: 2px solid #DBDBDB;
 	position: fixed;
 	bottom: 0px;
 	left: 0;
-	z-index: 1;
+	z-index: 1;*/
+	background-color:#6d84b4;
+	height: 20px;
+	width: 100%;
+	float: center;
+	text-align: center;
+	/*font-family:Arial;*/
+	color:#FFFFFF;
 }

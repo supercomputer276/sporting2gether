@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 
 class Users(models.Model):
 	user = models.OneToOneField(User)
-	phone_no = models.CharField(max_length=10,verbose_name="Phone # (digits)")
+	phone_no = models.CharField(max_length=10,verbose_name="Phone # (digits)",blank=True)
+	def __unicode__(self):
+		return self.user.username
 
 class Event(models.Model):
 	BASEBALL = 'BASE'

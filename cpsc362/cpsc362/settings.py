@@ -62,7 +62,7 @@ DATABASES = {
 		'ENGINE': 'django.db.backends.mysql',
 		'NAME': 'sporting2gether',
 		'USER': 'root',
-		'PASSWORD': 'Sh4dowg4me',
+		'PASSWORD': 'ch4oscontrol',
 		'HOST': '127.0.0.1',
 		'PORT': '',
 	}
@@ -94,3 +94,5 @@ STATICFILES_DIRS = (
 )
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+
+LOGIN_URL = '/login/'

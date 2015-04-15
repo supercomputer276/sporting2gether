@@ -1,19 +1,41 @@
 {% load staticfiles %}
 <html>
 	<head>
+		<meta charset="UTF-8"/>
 		<title>Sporting 2gether :: {{ page_title }}</title>
 		<link rel="stylesheet" type="text/css" href="{% static 'sporting2gether/style.css' %}"/>
 	</head>
 	<body>
 		<div class="siteheader">
 			<div class="siteheader-logo">
-				<img src="{% static 'sporting2gether/images/sporting2gether-logoheader-3.28.15.png' %}" alt="Sporting 2gether" title="Sporting 2gether"/>
+				<a href="/"><img src="{% static 'sporting2gether/images/sporting2gether-logoheader-3.28.15.png' %}" alt="Sporting 2gether" title="Sporting 2gether"/></a>
 			</div>
 			<div class="siteheader-login">
-				account
+				{% if user.is_authenticated %}
+				{{ user.username }} is logged in!
+				<a href="/logout/">Log out</a>
+				{% else %}
+				<!-- if not logged in -->
+				<form action="/login/?next={{ request.path }}" method="post">
+					{% csrf_token %}
+					{{ login_form }}
+					<input type="submit" value="Sign In" />
+					<span style="font-size:10pt;"><a href="/register/">Sign Up</a></span>
+				</form>
+				<!-- END if not logged in -->
+				{% endif %}
 			</div>
-			<div class="siteheader-search">
+			<!--<div class="siteheader-search">
 				search field
-			</div>
+			</div>-->
+		</div>
+		<div class="menu">
+			<ul>
+				<li>Create New Event</li>
+				<li>My Events</li>
+				<li>My Schedule</li>
+				<li>My Profile</li>
+				<li><a href="/contact/">Contact Us</a><li>
+			</ul>
 		</div>
 		<div class="content">
