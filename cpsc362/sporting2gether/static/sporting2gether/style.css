@@ -91,7 +91,7 @@ body {
 	left: 0;
 	z-index: 1;*/
 	background-color:#6d84b4;
-	height: 20px;
+	height: auto; /*20px;*/
 	width: 100%;
 	float: center;
 	text-align: center;

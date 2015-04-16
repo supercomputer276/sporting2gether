@@ -1,6 +1,6 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
-from django.template import RequestContext
+from django.template import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from sporting2gether import forms
@@ -68,7 +68,10 @@ def user_login(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
-				return HttpResponseRedirect('/')
+				if request.GET['next'] is not None:
+					return HttpResponseRedirect(request.GET['next'])
+				else:
+					return HttpResponseRedirect('/')
 			else:
 				return HttpResponse("Your Sporting 2gether account is disabled. Sorry.");
 		else:
