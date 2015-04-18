@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 class Users(models.Model):
 	user = models.OneToOneField(User)
@@ -34,7 +35,7 @@ class Event(models.Model):
 	)
 	#Automatic primary key
 	title = models.CharField(max_length=50)
-	creator = models.ForeignKey(Users)
+	creator = models.ForeignKey(User, related_name='event_creator')
 	description = models.TextField()
 	start_datetime = models.DateTimeField(verbose_name="Date & Time")
 	capacity = models.PositiveIntegerField()
@@ -42,11 +43,12 @@ class Event(models.Model):
 	location_main = models.CharField(max_length=50)
 	location_city = models.CharField(max_length=25)
 	location_zip = models.CharField(max_length=5)
-
-
-class Participation(models.Model):
-	event = models.ForeignKey(Event)
-	user = models.ForeignKey(Users)
+	participants = models.ManyToManyField(User, related_name='event_players')
+	def __str__(self):
+		return "Event: " + self.title
 	
-	class Meta:
-		unique_together = (('event','user'),)
+	def getDateTime(self):
+		return datetime.combine(self.start_datetime.date(),self.start_datetime.time())
+	
+	def getTimeDifference(self):
+		return datetime.today() - self.getDateTime()

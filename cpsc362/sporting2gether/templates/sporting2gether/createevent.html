@@ -1,0 +1,11 @@
+{% if sentForm %}
+<p>Your event has been created! <a href="/">Return to the front page.</a></p>
+{% else %}
+<h1>Create New Event</h1>
+<p>All fields are required.</p>
+<form action="/createevent/" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+	<input type="submit" value="Submit" />
+</form>
+{% endif %}

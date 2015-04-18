@@ -1,0 +1,11 @@
+{% if sentForm %}
+<p>Thank you for contacting us! <a href="/">Return to the front page.</a></p>
+{% else %}
+<h1>Contact Us</h1>
+<p>All fields are required.</p>
+<form action="/contact/" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+	<input type="submit" value="Submit" />
+</form>
+{% endif %}

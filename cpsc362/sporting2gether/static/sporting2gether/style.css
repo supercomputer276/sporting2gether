@@ -45,7 +45,9 @@ body {
 }
 
 .menu {
-	background-color:#6d84b4;height:40px;width:auto;
+	background-color:#6d84b4;
+	height:40px;
+	width:auto;
 }
 
 .menu ul {

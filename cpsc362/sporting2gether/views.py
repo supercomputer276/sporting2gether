@@ -3,7 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from sporting2gether import forms
+from django.core.mail import send_mail
+from datetime import datetime, timedelta
+from sporting2gether import forms, models
 
 #Holds context data for every page; update context_dict in each method with this
 commonContext= {'login_form': forms.LoginForm()}
@@ -33,7 +35,7 @@ def get_name(request):
 	context_dict.update(commonContext)
     return render_to_response('sporting2gether/page.html', context_dict, context_instance=RequestContext(request))
 
-def register(request):
+def user_register(request):
 	context = RequestContext(request)
 	registered = False
 	if request.method == 'POST':
@@ -61,6 +63,7 @@ def register(request):
 def user_login(request):
 	#ideally, this would be a passover from logging into the header, but just in case, it may also serve as an individual page
 	context = RequestContext(request)
+	check = request.GET is not None
 	if request.method == 'POST':
 		username = request.POST['username']
 		password = request.POST['password']
@@ -68,7 +71,7 @@ def user_login(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
-				if request.GET['next'] is not None:
+				if check:
 					return HttpResponseRedirect(request.GET['next'])
 				else:
 					return HttpResponseRedirect('/')
@@ -80,9 +83,100 @@ def user_login(request):
 	else:
 		context_dict = {'page_title': 'Login', 'page_template': 'sporting2gether/login.html'}
 		context_dict.update(commonContext)
+		if check:
+			context_dict.update({'next': '?next=' + request.GET['next']})
+		else:
+			context_dict.update({'next': ''})
 		return render_to_response('sporting2gether/page.html', context_dict, context)
 
 @login_required
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/')
+
+def contact(request):
+	context = RequestContext(request)
+	sentForm = False
+	if request.method == 'POST':
+		form = forms.ContactForm(request.POST)
+		if form.is_valid():
+			name = request.POST['name']
+			email = request.POST['email']
+			subject = "Sporting2gether contact: " + request.POST['subject']
+			message = "From " + name + " at " + email + ":\n\n" + request.POST['message']
+			send_mail(subject, message, from_email=email, recipient_list=['sporting2gether@gmail.com'], fail_silently=False)
+			sentForm = True
+		else:
+			print form.errors
+	else:
+		form = forms.ContactForm()
+	context_dict = {'page_title': 'Contact Us', 'page_template': 'sporting2gether/contact.html', 'form': form, 'sentForm': sentForm}
+	context_dict.update(commonContext)
+	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
+
+@login_required
+def create_event(request):
+	context = RequestContext(request)
+	sentForm = False
+	if request.method == 'POST':
+		form = forms.CreateEventForm(request.POST)
+		if form.is_valid():
+			#process form
+			e = models.Event()
+			e.title = request.POST['title']
+			e.description = request.POST['description']
+			e.creator = request.user
+			e.start_datetime = request.POST['start_datetime']
+			e.capacity = request.POST['capacity']
+			e.category = request.POST['category']
+			e.location_main = request.POST['location_main']
+			e.location_city = request.POST['location_city']
+			e.location_zip = request.POST['location_zip']
+			e.save()
+			#END process form
+			sentForm = True
+		else:
+			print form.errors
+	else:
+		form = forms.CreateEventForm()
+	context_dict = {'page_title': 'Create New Event', 'page_template': 'sporting2gether/createevent.html', 'form': form, 'sentForm': sentForm}
+	context_dict.update(commonContext)
+	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
+
+def view_events(request):
+	context = RequestContext(request)
+	#build queryset
+	data = models.Event.objects.all()
+	#END built queryset
+	#time until
+	timeleft = []
+	for e in data:
+		e.start = e.getDateTime()
+		temp = e.getTimeDifference()
+		temp2 = abs(temp)
+		text = "";
+		#text += str(temp.days) + " days, " + str(temp.seconds/60/60) + " minutes, " + str(temp.seconds) + " seconds"
+		#text += str(temp2)
+		#temp.seconds delivers the number of seconds in the day
+		#text += " | "
+		if temp2 > timedelta(days=1):
+			text += str(temp2.days) + " days"
+		elif temp2 > timedelta(hours=1):
+			text += str(temp2.seconds/3600) + " hours and " + str(temp2.seconds/60) + " minutes"
+		elif temp2 > timedelta(minutes=1):
+			text += str(temp2.seconds/60) + " minutes and " + str(temp2.seconds) + " seconds"
+		else:
+			text += str(temp2)
+		
+		if temp >= timedelta(0):
+			#time ago
+			text += " ago"
+		else:
+			#time until
+			text += " until event"
+		timeleft += [text]
+	#END time until
+	sportchoices = models.Event.SPORT_CHOICES
+	context_dict = {'page_title': 'Events', 'page_template': 'sporting2gether/eventlist.html', 'data': data, 'CHOICES': sportchoices, 'timeleft': timeleft}
+	context_dict.update(commonContext)
+	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)

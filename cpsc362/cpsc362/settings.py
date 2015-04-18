@@ -101,3 +101,10 @@ LOGIN_URL = '/login/'
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
 )
+
+# Email settings
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'sporting2gether@gmail.com'
+EMAIL_HOST_PASSWORD = '362project'
+EMAIL_PORT = 587
