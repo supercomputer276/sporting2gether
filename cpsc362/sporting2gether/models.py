@@ -40,9 +40,9 @@ class Event(models.Model):
 	start_datetime = models.DateTimeField(verbose_name="Date & Time")
 	capacity = models.PositiveIntegerField()
 	category = models.CharField(max_length=4, choices=SPORT_CHOICES, verbose_name="Sport")
-	location_main = models.CharField(max_length=50)
-	location_city = models.CharField(max_length=25)
-	location_zip = models.CharField(max_length=5)
+	location_main = models.CharField(max_length=50, verbose_name="Address")
+	location_city = models.CharField(max_length=25, verbose_name="City")
+	location_zip = models.CharField(max_length=5, verbose_name="ZIP Code")
 	participants = models.ManyToManyField(User, related_name='event_players')
 	def __str__(self):
 		return "Event: " + self.title

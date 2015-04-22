@@ -1,8 +1,57 @@
 <a name="top"></a>
-<h1>Events</h1>
+<!--{{ filter }}-->
+<h1>
+{% if filter %}
+	{% if filter.lower == "my" %}
+		My Events
+	{% elif filter.lower == "schedule" %}
+		My Schedule
+	{% elif filter.lower == "today" %}
+		Events Happening Today or Later
+	{% else %}
+		Events
+	{% endif %}
+{% else %}
+	Events
+{% endif %}
+</h1>
 <!-- insert filter form here -->
+<form method="post" action="/search/?next={{ request.path }}" class="filterform">
+	<b>Filters</b><br/>
+	<button type="button" onClick="gotoPage('/event/all/')">All Events</button>
+	<button type="button" onClick="gotoPage('/event/my/')">My Events</button>
+	<button type="button" onClick="gotoPage('/event/schedule/')">My Schedule</button>
+	<button type="button" onClick="gotoPage('/event/today/')">Today (or Later)</button>
+	<!-- search forms; different ones depending on what to search -->
+	<!-- the view this form goes to performs the correct search and redirects back to the event view with the correct parameters -->
+	<br/><i>Search by:</i>
+	&lt;insert name/location search&gt;
+	&lt;insert sport filter&gt;
+	&lt;insert ZIP search&gt;
+</form>
 <table width="100%">
 <tr><td colspan="2"><hr width="90%"/></td></tr>
+{% if data_number == 0 %}
+	<!-- no entries; show message -->
+	<tr><td colspan="2" style="text-align:center;">
+		{% if filter %}
+			{% if filter.lower == "my" %}
+				<h3>You aren't hosting any events.</h3>
+				<p><a href="/createevent/">Consider making one</a>, or try a different filter if you're looking for events by other members.</p>
+			{% elif filter.lower == "schedule" %}
+				<h3>You haven't joined any events.</h3>
+				<p><a href="/event/all/">Go find one!</a></p>
+			{% elif filter.lower == "today" %}
+				<h3>Couldn't find any upcoming events.</h3>
+				<p><a href="/createevent/">Consider making one</a>, or check back later.</p>
+			{% else %}
+				<h3>Hmm, there seem to be no events matching that criteria.</h3>
+				<p>Try a different filter.</p>
+			{% endif %}
+		{% endif %}
+	</td></tr>
+	<tr><td colspan="2"><hr width="90%"/></td></tr>
+{% endif %}
 {% for e in data %}
 	<tr><td width="85%">
 		<h3>{{ e.title }}<br/><span style="font-size:80%;">&nbsp;&nbsp;&nbsp;

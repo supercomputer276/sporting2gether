@@ -80,6 +80,18 @@ body {
 	padding: 0.5em 1em;
 }
 
+.content form label {
+	color: #0E0936;
+}
+
+.filterform {
+	background-color: #819CD3;
+	color: white;
+	text-align: center;
+	padding: 2px;
+	width: 100%;
+}
+
 .sitefooter {
 	/*background: #BDBDBD;
 	width: 100%;

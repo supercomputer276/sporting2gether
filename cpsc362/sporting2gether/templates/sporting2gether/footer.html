@@ -1,7 +1,9 @@
 		</div>
 		<div class="sitefooter">
-			Copyright &copy; Sporting2gether 2015. All rights reserved.<br/>
-			<span style="font-size:8pt;">URL of this page: {{ request.path }}</span>
+			Copyright &copy; Sporting2gether 2015. All rights reserved.
+			{% if DEBUG %}
+			<br/><span style="font-size:8pt;">URL of this page: {{ request.path }}</span>
+			{% endif %}
 		</div>
 	</body>
 </html>

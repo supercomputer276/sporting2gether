@@ -4,11 +4,16 @@
 		<meta charset="UTF-8"/>
 		<title>Sporting 2gether :: {{ page_title }}</title>
 		<link rel="stylesheet" type="text/css" href="{% static 'sporting2gether/style.css' %}"/>
+		<script>
+			function gotoPage(page) {
+				window.location = page;
+			}
+		</script>
 	</head>
 	<body>
 		<div class="siteheader">
 			<div class="siteheader-logo">
-				<a href="/"><img src="{% static 'sporting2gether/images/sporting2gether-logoheader-3.28.15.png' %}" alt="Sporting 2gether" title="Sporting 2gether"/></a>
+				<a href="/"><img src="{% static 'sporting2gether/images/sporting2gether-logoheader-4.19.15.png' %}" alt="Sporting 2gether" title="Sporting 2gether"/></a>
 			</div>
 			<div class="siteheader-login">
 				{% if user.is_authenticated %}
@@ -33,7 +38,7 @@
 			<ul>
 				<li><a href="/createevent/">Create New Event</a></li>
 				<li><a href="/event/my/">My Events</a></li>
-				<li>My Schedule</li>
+				<li><a href="/event/schedule/">My Schedule</a></li>
 				<li>My Profile</li>
 				<li><a href="/contact/">Contact Us</a><li>
 			</ul>

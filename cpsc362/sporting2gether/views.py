@@ -6,9 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from datetime import datetime, timedelta
 from sporting2gether import forms, models
+from cpsc362 import settings
 
 #Holds context data for every page; update context_dict in each method with this
-commonContext= {'login_form': forms.LoginForm()}
+commonContext= {'login_form': forms.LoginForm(), 'DEBUG': settings.DEBUG,}
 
 def index(request):
 	context_dict = {'page_title': 'Index', 'page_template': 'sporting2gether/index.html'}
@@ -62,6 +63,8 @@ def user_register(request):
 
 def user_login(request):
 	#ideally, this would be a passover from logging into the header, but just in case, it may also serve as an individual page
+	if request.user.is_authenticated():
+		return HttpReponseRedirect('/')
 	context = RequestContext(request)
 	check = request.GET is not None
 	if request.method == 'POST':
@@ -86,7 +89,7 @@ def user_login(request):
 		if check:
 			context_dict.update({'next': '?next=' + request.GET['next']})
 		else:
-			context_dict.update({'next': ''})
+			context_dict.update({'next': '?next=/'})
 		return render_to_response('sporting2gether/page.html', context_dict, context)
 
 @login_required
@@ -143,11 +146,42 @@ def create_event(request):
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
 
-def view_events(request):
+def view_events(request,filter,searchterm):
 	context = RequestContext(request)
 	#build queryset
-	data = models.Event.objects.all()
+	if filter is not None:
+		if filter.lower() == "all":
+			data = models.Event.objects.all()
+		elif filter.lower() == "my":
+			#events the user has hosted
+			if request.user.is_authenticated():
+				data = models.Event.objects.filter(creator=request.user)
+			else:
+				return HttpResponseRedirect(settings.LOGIN_URL + '?next=' + request.path)
+		elif filter.lower() == "schedule":
+			#events the user has joined
+			data = models.Event.objects.filter(participants=request.user.id)
+		elif filter.lower() == "today":
+			#events today or later
+			data = models.Event.objects.filter(start_datetime__gt=datetime.now())
+		elif filter.lower() == "search":
+			#event search
+			if searchterm is not None:
+				#searchterm verified
+				#filter by sport if searchterm one of the four-letter abbreviations
+				#filter by ZIP code if searchterm is a five-digit number
+				#otherwise filter by name and/or location
+				data = models.Event.objects.all() #temporary
+			else:
+				#show all data
+				data = models.Event.objects.all()
+		else:
+			data = models.Event.objects.all()
+	else:
+		data = models.Event.objects.all()
 	#END built queryset
+	#number of entries
+	data_number = data.count()
 	#time until
 	timeleft = []
 	for e in data:
@@ -177,6 +211,7 @@ def view_events(request):
 		timeleft += [text]
 	#END time until
 	sportchoices = models.Event.SPORT_CHOICES
-	context_dict = {'page_title': 'Events', 'page_template': 'sporting2gether/eventlist.html', 'data': data, 'CHOICES': sportchoices, 'timeleft': timeleft}
+	context_dict = {'page_title': 'Events', 'page_template': 'sporting2gether/eventlist.html',
+		'data': data, 'data_number': data_number, 'CHOICES': sportchoices, 'timeleft': timeleft, 'filter': filter}
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
