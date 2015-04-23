@@ -44,6 +44,7 @@ class Event(models.Model):
 	location_city = models.CharField(max_length=25, verbose_name="City")
 	location_zip = models.CharField(max_length=5, verbose_name="ZIP Code")
 	participants = models.ManyToManyField(User, related_name='event_players')
+	is_cancelled = models.BooleanField(default=False)
 	def __str__(self):
 		return "Event: " + self.title
 	

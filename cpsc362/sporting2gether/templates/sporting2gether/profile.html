@@ -1,0 +1,35 @@
+<h1>
+{% if entry %}
+	{% if entry.lower == user.username %}
+		My Profile
+	{% else %}
+		User Profile
+	{% endif %}
+{% else %}
+	User Profile
+{% endif %}
+</h1>
+{% if entry %}
+	{% if entry.lower == user.username %}
+		<p><a href="/profile/edit/">Edit</a></p>
+	{% endif %}
+{% endif %}
+
+<table border="2">
+<tr>
+	<td>Username</td>
+    <td>{{ data.user.username }}</td>
+</tr>
+<tr>
+	<td>Email Address</td>
+    <td>{{ data.user.email }}</td>
+</tr>
+<tr>
+	<td>First Name</td>
+    <td>{{ data.user.get_short_name }}</td>
+</tr>
+<tr>
+	<td>Phone number</td>
+    <td>{{ data.phone_no }}</td>
+</tr>
+</table>

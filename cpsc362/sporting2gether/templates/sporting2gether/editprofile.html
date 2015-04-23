@@ -1,0 +1,10 @@
+<h1>Edit Profile: {{ user.username }}</h1>
+<form action="/profile/edit/" method="post">
+	{% if wrongpasswordflag %}
+		<ul><li>Incorrect verification password. You must enter your CURRENT password to change your profile.</li></ul>
+	{% endif %}
+    {% csrf_token %}
+	<p><label>E-mail address:</label> {{ data.user.email }}</p>
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>

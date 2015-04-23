@@ -73,7 +73,7 @@
 		<p style="padding-left: 2em;"><i>Location:</i> {{ e.location_main }} in {{ e.location_city }}. ZIP: {{ e.location_zip }}</p>
 		<p style="padding-left: 1em;"><i>Read More</i></p>
 	</td><td style="text-align:right;">
-		<p style="font-size:10pt;"><i>hosted by {{ e.creator.username }}</i></p>
+		<p style="font-size:10pt;"><i>hosted by <a href="/profile/{{ e.creator.username }}/">{{ e.creator.username }}</a></i></p>
 		<p style="font-size:10pt;"><i>Capacity: 0 / {{ e.capacity }}</i></p>
 		<!-- show number of current participants -->
 	</td></tr>
