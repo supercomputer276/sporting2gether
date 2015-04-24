@@ -19,26 +19,6 @@ def index(request):
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=RequestContext(request))
 
-def get_name(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = NameForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('/thanks/')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = forms.NameForm()
-
-	context_dict = {'page_title': 'Name (Test)', 'page_template': 'sporting2gether/name.html', 'form': form}
-	context_dict.update(commonContext)
-    return render_to_response('sporting2gether/page.html', context_dict, context_instance=RequestContext(request))
-
 def user_register(request):
 	if request.user.is_authenticated():
 		return HttpResponseRedirect('/')
@@ -223,6 +203,16 @@ def view_events(request,filter,searchterm):
 	sportchoices = models.Event.SPORT_CHOICES
 	context_dict = {'page_title': 'Events', 'page_template': 'sporting2gether/eventlist.html',
 		'data': data, 'data_number': data_number, 'CHOICES': sportchoices, 'timeleft': timeleft, 'filter': filter}
+	context_dict.update(commonContext)
+	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
+
+def event_detail(request, eventid):
+	context = RequestContext(request)
+	#get relevant event
+	thisevent = models.Event.objects.get(id=eventid)
+	sportchoices = models.Event.SPORT_CHOICES
+	context_dict = {'page_title': 'Event Detail - ' + thisevent.title, 'page_template': 'sporting2gether/eventdetail.html',
+		'thisevent': thisevent, 'CHOICES': sportchoices,}
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
 

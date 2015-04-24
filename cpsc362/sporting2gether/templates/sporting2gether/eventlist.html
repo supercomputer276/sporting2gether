@@ -57,9 +57,7 @@
 		<h3>{{ e.title }}<br/><span style="font-size:80%;">&nbsp;&nbsp;&nbsp;
 			{% for c in CHOICES %}
 				{% if c.0 == e.category %}
-					{% with sport=c.1 %}
-						{{ sport }}
-					{% endwith %}
+					{{ c.1 }}
 				{% endif %}
 			{% endfor %}
 		on {{ e.start_datetime }} <!--(
@@ -71,10 +69,14 @@
 		)--></span></h3>
 		<p style="padding-left: 2em;">{{ e.description }}</p>
 		<p style="padding-left: 2em;"><i>Location:</i> {{ e.location_main }} in {{ e.location_city }}. ZIP: {{ e.location_zip }}</p>
-		<p style="padding-left: 1em;"><i>Read More</i></p>
+		<p style="padding-left: 1em;"><a href="/event/view/{{ e.id }}/">Read More</a></p>
 	</td><td style="text-align:right;">
 		<p style="font-size:10pt;"><i>hosted by <a href="/profile/{{ e.creator.username }}/">{{ e.creator.username }}</a></i></p>
+		{% if e.is_cancelled %}
+		<p style="font-size:10pt;"><i>Cancelled</i></p>
+		{% else %}
 		<p style="font-size:10pt;"><i>Capacity: 0 / {{ e.capacity }}</i></p>
+		{% endif %}
 		<!-- show number of current participants -->
 	</td></tr>
 	<tr><td colspan="2"><hr width="90%"/></td></tr>

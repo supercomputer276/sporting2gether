@@ -56,7 +56,8 @@ body {
 
 .menu li {
 	float:left;
-	width:200px;
+	padding-left: 20px;
+	padding-right: 10px;
 	text-align:center;
 	line-height:40px;
 	color:#FFFFFF;
@@ -106,7 +107,7 @@ body {
 	z-index: 1;*/
 	background-color:#6d84b4;
 	height: auto; /*20px;*/
-	width: 100%;
+	width: auto;
 	float: center;
 	text-align: center;
 	/*font-family:Arial;*/

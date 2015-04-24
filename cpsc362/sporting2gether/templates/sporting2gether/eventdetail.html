@@ -1,0 +1,36 @@
+<p><a href="/event/all/">&lt; Back to Event Listing</a></p>
+<h1 style="text-align:center;">{{ thisevent.title }}</h1>
+<table class="filterform">
+	<tr style="font-weight:bold;">
+		<td width="20%">Sport</td>
+		<td width="20%">Start Date &amp; Time</td>
+		<td width="20%">Address</td>
+		<td width="20%">City</td>
+		<td width="20%">ZIP Code</td>
+	</tr><tr>
+		<td>{% for c in CHOICES %}
+				{% if c.0 == thisevent.category %}
+					{{ c.1 }}
+				{% endif %}
+			{% endfor %}</td>
+		<td>{{ thisevent.start_datetime }}</td>
+		<td>{{ thisevent.location_main }}</td>
+		<td>{{ thisevent.location_city }}</td>
+		<td>{{ thisevent.location_zip }}</td>
+	</tr>
+</table>
+<table width="100%" border="0" style="margin-top:1em;">
+	<tr><td>
+		<p><b>Description:</b></p>
+		<p style="padding-left:1em;">{{ thisevent.description }}</p>
+	</td><td width="25%" style="text-align:right;">
+		<p><b>Host:</b><br/><a href="/profile/{{ thisevent.creator}}/">{{ thisevent.creator }}</a></p>
+		{% if thisevent.is_cancelled %}
+		<p>This event has been cancelled.</p>
+		{% else %}
+		<p>insert join link here</p>
+		<p><b>Participants (0 / {{thisevent.capacity}}):</b><br/>(insert list here)</p>
+		{% endif %}
+	</td></tr>
+</table>
+<p><a href="/event/all/">&lt; Back to Event Listing</a></p>
