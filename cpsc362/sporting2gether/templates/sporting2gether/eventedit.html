@@ -1,0 +1,66 @@
+<form action="/event/edit/{{ thisevent.id }}/" method="POST">
+	{% csrf_token %}
+	<h1 style="text-align:center;">
+		<input type="text" name="title" size="50" maxlength="50" value="{{ thisevent.title }}" style="font-size:20pt; font-weight:bold;" required="required"/>
+	</h1>
+	<table class="filterform">
+		<tr style="font-weight:bold;">
+			<td width="20%"><label for="category">Sport</label></td>
+			<td width="20%"><label for="start_datetime">Start Date &amp; Time</label></td>
+			<td width="20%"><label for="location_main">Address</label></td>
+			<td width="20%"><label for="location_city">City</label></td>
+			<td width="20%"><label for="location_zip">ZIP Code</label></td>
+		</tr><tr>
+			<td><select id="category" name="category">
+				<option value="">---------</option>
+				{% for c in CHOICES %}
+					<option value="{{ c.0 }}" {% if thisevent.category == c.0 %}selected="selected"{% endif %}>{{ c.1 }}</option>
+				{% endfor %}
+			</select></td>
+			<td><input type="text" id="start_datetime" name="start_datetime" size="15" value="{{ timevalue }}" required="required"/></td>
+			<td><input type="text" id="location_main" name="location_main" size="30" maxlength="50" value="{{ thisevent.location_main }}" required="required"/></td>
+			<td><input type="text" id="location_city" name="location_city" size="20" maxlength="25" value="{{ thisevent.location_city }}" required="required"/></td>
+			<td><input type="text" id="location_zip" name="location_zip" size="5" maxlength="5" value="{{ thisevent.location_zip }}" required="required"/></td>
+		</tr><tr>
+			<td></td>
+			<td>YYYY-MM-DD HH:MM<br/>(24-hour clock)</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+	<table width="100%" border="0" style="margin-top:1em;">
+		<tr><td>
+			<p><b>Description:</b></p>
+			<p style="padding-left:1em;"><textarea name="description" rows="7" cols="100">{{ thisevent.description }}</textarea></p>
+		</td><td width="25%" style="text-align:right;">
+			<p>
+				<input type="submit" id="submit" name="submit" value="Save changes"/>
+				<a href="/event/view/{{ thisevent.id }}/">Cancel changes</a>
+			</p>
+			{{ errormsg | safe }}
+			<p>
+				<input type="checkbox" id="is_cancelled" name="is_cancelled" value="{{ thisevent.is_cancelled }}"/>
+				<label for="is_cancelled">Cancel Event</label>
+			</p>
+			<!--{% if thisevent.is_cancelled %}
+				<p>This event has been cancelled.<br/>(uncancel link)</p>
+			{% else %}
+				<p>(cancel link)</p>
+			{% endif %}
+			-->
+			<table border="0" style="float:right;">
+				<tr>
+					<td><b>Participants ({{ thisevent.participants.count }} / {{thisevent.capacity}})</b></td>
+					<td>Kick</td>
+				</tr>
+				{% for p in thisevent.participants.all %}
+				<tr>
+					<td>{{ p }}</td>
+					<td><input type="checkbox" id="kick_{{ p }}" name="is_cancelled[]"/></td>
+				</tr>
+				{% endfor %}
+			</table>
+		</td></tr>
+	</table>
+</form>

@@ -93,6 +93,10 @@ body {
 	width: 100%;
 }
 
+.filterform td label {
+	color: white;
+}
+
 .sitefooter {
 	/*background: #BDBDBD;
 	width: 100%;

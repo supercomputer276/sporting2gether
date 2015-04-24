@@ -75,7 +75,7 @@
 		{% if e.is_cancelled %}
 		<p style="font-size:10pt;"><i>Cancelled</i></p>
 		{% else %}
-		<p style="font-size:10pt;"><i>Capacity: 0 / {{ e.capacity }}</i></p>
+		<p style="font-size:10pt;"><i>Capacity: {{ e.participants.count }} / {{ e.capacity }}</i></p>
 		{% endif %}
 		<!-- show number of current participants -->
 	</td></tr>

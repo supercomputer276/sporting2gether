@@ -24,12 +24,30 @@
 		<p><b>Description:</b></p>
 		<p style="padding-left:1em;">{{ thisevent.description }}</p>
 	</td><td width="25%" style="text-align:right;">
-		<p><b>Host:</b><br/><a href="/profile/{{ thisevent.creator}}/">{{ thisevent.creator }}</a></p>
+		<p>
+			<b>Host:</b><br/><a href="/profile/{{ thisevent.creator}}/">{{ thisevent.creator }}</a>
+			{% if user == thisevent.creator %}
+				<br/><a href="/event/edit/{{ thisevent.id }}">Edit event details</a>
+			{% endif %}
+		</p>
+		{{ errormsg | safe }}
 		{% if thisevent.is_cancelled %}
-		<p>This event has been cancelled.</p>
+			<p>This event has been cancelled.</p>
 		{% else %}
-		<p>insert join link here</p>
-		<p><b>Participants (0 / {{thisevent.capacity}}):</b><br/>(insert list here)</p>
+			{% if thisevent.participants.count >= thisevent.capacity %}
+				<p>This event is full.</p>
+			{% elif user.is_authenticated %}
+				{% if joined %}
+					<p><a href="/event/join/{{ thisevent.id }}/">Leave this event</a></p>
+				{% else %}
+					<p><a href="/event/join/{{ thisevent.id }}/">Join this event</a></p>
+				{% endif %}
+			{% endif %}
+		<p><b>Participants ({{ thisevent.participants.count }} / {{thisevent.capacity}}):</b>
+		{% for p in thisevent.participants.all %}
+			<br/><a href="/profile/{{ p }}/">{{ p }}</a>
+		{% endfor %}
+		</ul></p>
 		{% endif %}
 	</td></tr>
 </table>

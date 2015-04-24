@@ -211,10 +211,62 @@ def event_detail(request, eventid):
 	#get relevant event
 	thisevent = models.Event.objects.get(id=eventid)
 	sportchoices = models.Event.SPORT_CHOICES
+	#get join errors
+	errormsg = ""
+	if request.GET.get('error',None) is not None:
+		errormsg += "<ul><li>"
+		if request.GET.get('error',None) == '1':
+			errormsg += "Sorry, the event filled up while you weren't looking."
+		if request.GET.get('error',None) == '2':
+			errormsg += "Sorry, the event was cancelled while you weren't looking."
+		if request.GET.get('error',None) == '3':
+			errormsg += "You're the host! You can't join your own event."
+		errormsg += "</li></ul>"
+	#is the user in this event
+	joined = False
+	if request.user.is_authenticated():
+		joined = request.user in thisevent.participants.all()
 	context_dict = {'page_title': 'Event Detail - ' + thisevent.title, 'page_template': 'sporting2gether/eventdetail.html',
-		'thisevent': thisevent, 'CHOICES': sportchoices,}
+		'thisevent': thisevent, 'CHOICES': sportchoices, 'errormsg': errormsg, 'joined': joined,}
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
+
+@login_required
+def edit_event(request, eventid):
+	context = RequestContext(request)
+	#get relevant event
+	thisevent = models.Event.objects.get(id=eventid)
+	sportchoices = models.Event.SPORT_CHOICES
+	#translate start_datetime
+	timevalue =  thisevent.start_datetime.strftime("%Y-%m-%d %H:%M")
+	context_dict = {'page_title': 'Event Edit - ' + thisevent.title, 'page_template': 'sporting2gether/eventedit.html',
+		'thisevent': thisevent, 'CHOICES': sportchoices, 'timevalue': timevalue,}
+	context_dict.update(commonContext)
+	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
+
+@login_required
+def join_event(request, eventid):
+	context = RequestContext(request)
+	#get relevant event
+	thisevent = models.Event.objects.get(id=eventid)
+	#check whether or not the user's ID is already in this page; add or remove as necessary
+	if thisevent.creator != request.user:
+		if not thisevent.is_cancelled:
+			if request.user in thisevent.participants.all():
+				#remove
+				thisevent.participants.remove(request.user)
+			elif thisevent.participants.count() < thisevent.capacity:
+				thisevent.participants.add(request.user)
+			else:
+				#hit capacity!
+				return HttpResponseRedirect('/event/view/' + str(thisevent.id) + '/?error=1') #1
+			return HttpResponseRedirect('/event/view/' + str(thisevent.id) + '/')
+		else:
+			#cancelled!
+			return HttpResponseRedirect('/event/view/' + str(thisevent.id) + '/?error=2') #2
+	else:
+		#host!
+		return HttpResponseRedirect('/event/view/' + str(thisevent.id) + '/?error=3') #3
 
 def show_profile(request,entry):
 	context = RequestContext(request)
