@@ -39,3 +39,15 @@ class ProfileEditForm(forms.Form):
 	newpassword = forms.CharField(label='New password', widget=forms.PasswordInput(), max_length=128, required=False, help_text="If you change your password, you will have to log back in after submitting your changes")
 	newphone = forms.CharField(label="Phone # (digits)", max_length=10, required=False)
 	confirmpassword = forms.CharField(label='Enter current password', widget=forms.PasswordInput(), max_length=128)
+
+class EventEditForm(forms.ModelForm):
+	start_datetime = forms.CharField(label='Date & Time', help_text='YYYY-MM-DD HH:MM (24-hour clock)')
+	#kick = forms.MultipleChoiceField(choices=, label='', required=False)
+	
+	def __init__(self, thisevent, *args, **kwargs):
+		super(EventEditForm, self).__init__(*args, **kwargs)
+		self.fields['kick'] = forms.MultipleChoiceField(choices=[ (o.id, str(o)) for o in thisevent.participants.all()], required=False, widget=forms.CheckboxSelectMultiple())
+	
+	class Meta:
+		model = Event
+		fields = {'title', 'description', 'start_datetime', 'capacity', 'category', 'location_main', 'location_city', 'location_zip', 'is_cancelled'}

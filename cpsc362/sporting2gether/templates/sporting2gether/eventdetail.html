@@ -27,7 +27,7 @@
 		<p>
 			<b>Host:</b><br/><a href="/profile/{{ thisevent.creator}}/">{{ thisevent.creator }}</a>
 			{% if user == thisevent.creator %}
-				<br/><a href="/event/edit/{{ thisevent.id }}">Edit event details</a>
+				<br/><a href="/event/edit/{{ thisevent.id }}/">Edit event details</a>
 			{% endif %}
 		</p>
 		{{ errormsg | safe }}

@@ -97,6 +97,11 @@ body {
 	color: white;
 }
 
+.eventedit-title {
+	font-size:20pt;
+	font-weight:bold;
+}
+
 .sitefooter {
 	/*background: #BDBDBD;
 	width: 100%;

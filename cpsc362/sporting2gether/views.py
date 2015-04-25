@@ -239,8 +239,37 @@ def edit_event(request, eventid):
 	sportchoices = models.Event.SPORT_CHOICES
 	#translate start_datetime
 	timevalue =  thisevent.start_datetime.strftime("%Y-%m-%d %H:%M")
+	#process form
+	errormsg = ''
+	sentForm = False
+	if request.method == "POST":
+		form = forms.EventEditForm(thisevent,request.POST)
+		if form.is_valid():
+			#save changes (except capacity)
+			thisevent.title = request.POST.get('title',thisevent.title)
+			thisevent.description = request.POST.get('description',thisevent.description)
+			thisevent.start_datetime = request.POST.get('start_datetime',thisevent.start_datetime)
+			thisevent.category = request.POST.get('category',thisevent.category)
+			thisevent.location_main = request.POST.get('location_main',thisevent.location_main)
+			thisevent.location_city = request.POST.get('location_city',thisevent.location_city)
+			thisevent.location_zip = request.POST.get('location_zip',thisevent.location_zip)
+			#cancelled flag
+			thisevent.is_cancelled = request.POST.get('is_cancelled',False) #is not None
+			#remove marked players from participation
+			for target in request.POST.get('kick',[]):
+				thisevent.participants.remove(target)
+			#set capacity to higher of either POST number or participant number
+			thisevent.capacity = request.POST.get('capacity',thisevent.capacity)
+			if thisevent.participants.count() > thisevent.capacity:
+				thisevent.capacity = thisevent.participants.count()
+			thisevent.save()
+			errormsg = '<p style="color:#008800;">Changes saved!</p>'
+		else:
+			errormsg = form.errors
+	else:
+		form = forms.EventEditForm(thisevent)
 	context_dict = {'page_title': 'Event Edit - ' + thisevent.title, 'page_template': 'sporting2gether/eventedit.html',
-		'thisevent': thisevent, 'CHOICES': sportchoices, 'timevalue': timevalue,}
+		'thisevent': thisevent, 'CHOICES': sportchoices, 'timevalue': timevalue, 'form': form, 'errormsg': errormsg}
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
 

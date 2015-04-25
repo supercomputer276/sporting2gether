@@ -1,7 +1,11 @@
 <form action="/event/edit/{{ thisevent.id }}/" method="POST">
 	{% csrf_token %}
+	{% if sentForm %}
+		<p style="float: left; color:#008800;">Changes saved!</p>
+	{% endif %}
 	<h1 style="text-align:center;">
-		<input type="text" name="title" size="50" maxlength="50" value="{{ thisevent.title }}" style="font-size:20pt; font-weight:bold;" required="required"/>
+		<input type="text" name="title" size="50" maxlength="50" value="{{ thisevent.title }}" class="eventedit-title" required="required"/>
+		<!-- {{ form.title.label }} -->
 	</h1>
 	<table class="filterform">
 		<tr style="font-weight:bold;">
@@ -32,15 +36,15 @@
 	<table width="100%" border="0" style="margin-top:1em;">
 		<tr><td>
 			<p><b>Description:</b></p>
-			<p style="padding-left:1em;"><textarea name="description" rows="7" cols="100">{{ thisevent.description }}</textarea></p>
+			<p style="padding-left:1em;"><textarea name="description" rows="8" cols="100">{{ thisevent.description }}</textarea></p>
 		</td><td width="25%" style="text-align:right;">
 			<p>
 				<input type="submit" id="submit" name="submit" value="Save changes"/>
-				<a href="/event/view/{{ thisevent.id }}/">Cancel changes</a>
+				<a href="/event/view/{{ thisevent.id }}/">Exit</a>
 			</p>
 			{{ errormsg | safe }}
 			<p>
-				<input type="checkbox" id="is_cancelled" name="is_cancelled" value="{{ thisevent.is_cancelled }}"/>
+				<input type="checkbox" id="is_cancelled" name="is_cancelled" value="true" {% if thisevent.is_cancelled %} checked="checked" {% endif %}/>
 				<label for="is_cancelled">Cancel Event</label>
 			</p>
 			<!--{% if thisevent.is_cancelled %}
@@ -49,17 +53,22 @@
 				<p>(cancel link)</p>
 			{% endif %}
 			-->
-			<table border="0" style="float:right;">
+			<!--{{ form.kick }}-->
+			<table border="0" width="70%" style="float:right;">
 				<tr>
-					<td><b>Participants ({{ thisevent.participants.count }} / {{thisevent.capacity}})</b></td>
+					<td><b><label for="capacity">Participants</label>
+					({{ thisevent.participants.count }} /
+					<input type="text" id="capacity" name="capacity" size="2" value="{{ thisevent.capacity }}" style="font-weight;bold;"/>
+					)</b></td>
 					<td>Kick</td>
 				</tr>
 				{% for p in thisevent.participants.all %}
 				<tr>
-					<td>{{ p }}</td>
-					<td><input type="checkbox" id="kick_{{ p }}" name="is_cancelled[]"/></td>
+					<td><label for="kick_{{ p }}">{{ p }}</label></td>
+					<td><input type="checkbox" id="kick_{{ p }}" name="kick" value="{{ forloop.counter }}"/></td>
 				</tr>
 				{% endfor %}
+				<tr><td colspan="2" style="font-size:10pt; text-align:center;">Capacity will adjust up to no. of participants if set less than that number.</td></tr>
 			</table>
 		</td></tr>
 	</table>
