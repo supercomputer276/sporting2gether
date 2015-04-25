@@ -20,6 +20,7 @@ body {
 .siteheader-logo {
 	float: left;
 	text-align: left;
+	display:block;
 }
 
 .siteheader-login {
@@ -29,11 +30,12 @@ body {
 	/*background-color: #f7f7f7;*/
 	/*height: 70%;
 	width: 230px;*/
-	height:20px;
+	height: 20px;
 	padding-top: 0px;
 	padding-bottom: 0px;
 	padding-right: 1em;
 	margin: 0 1em;
+	display:block;
 }
 
 .siteheader-search {
@@ -46,8 +48,9 @@ body {
 
 .menu {
 	background-color:#6d84b4;
-	height:40px;
+	height:2.5em;
 	width:auto;
+	display:block;
 }
 
 .menu ul {
@@ -56,10 +59,10 @@ body {
 
 .menu li {
 	float:left;
-	padding-left: 20px;
-	padding-right: 10px;
+	padding-left: 2em;
+	/*padding-right: 10px;*/
 	text-align:center;
-	line-height:40px;
+	line-height:2.5em;
 	color:#FFFFFF;
 }
 

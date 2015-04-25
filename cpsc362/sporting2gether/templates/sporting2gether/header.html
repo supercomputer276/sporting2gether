@@ -12,9 +12,6 @@
 	</head>
 	<body>
 		<div class="siteheader">
-			<div class="siteheader-logo">
-				<a href="/"><img src="{% static 'sporting2gether/images/sporting2gether-logoheader-4.19.15.png' %}" alt="Sporting 2gether" title="Sporting 2gether"/></a>
-			</div>
 			<div class="siteheader-login">
 				{% if user.is_authenticated %}
 				{{ user.username }} is logged in!
@@ -23,12 +20,17 @@
 				<!-- if not logged in -->
 				<form action="/login/?next={{ request.path }}" method="post">
 					{% csrf_token %}
-					{{ login_form }}
+					<label for="id_username">Username:</label> <input id="id_username" maxlength="30" name="username" type="text" />
+					<label for="id_password">Password:</label> <input id="id_password" maxlength="128" name="password" type="password" />
+					<!--{{ login_form }}-->
 					<input type="submit" value="Sign In" />
 					<span style="font-size:10pt;"><a href="/register/">Sign Up</a></span>
 				</form>
 				<!-- END if not logged in -->
 				{% endif %}
+			</div>
+			<div class="siteheader-logo">
+				<a href="/"><img src="{% static 'sporting2gether/images/sporting2gether-logoheader-4.19.15.png' %}" alt="Sporting 2gether" title="Sporting 2gether"/></a>
 			</div>
 			<!--<div class="siteheader-search">
 				search field
