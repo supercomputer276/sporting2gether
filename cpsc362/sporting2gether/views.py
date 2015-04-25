@@ -167,6 +167,10 @@ def view_events(request,filter,searchterm):
 				if re.match(r'name__\w*',searchterm):
 					target = searchterm.replace('name__','')
 					data = models.Event.objects.filter(title__contains=target)
+				elif re.match(r'user__\w*',searchterm):
+					target = searchterm.replace('user__','')
+					innerquery = User.objects.filter(username__contains=target)
+					data = models.Event.objects.filter(creator__in=innerquery)
 				elif re.match(r'sport__\w\w\w\w$',searchterm):
 					target = searchterm.replace('sport__','')
 					data = models.Event.objects.filter(category=target)
@@ -177,7 +181,8 @@ def view_events(request,filter,searchterm):
 					target = searchterm.replace('zip__','')
 					data = models.Event.objects.filter(location_zip=target)
 				else:
-					data = models.Event.objects.all() #temporary
+					#search event title if nothing else matches
+					data = models.Event.objects.filter(title__contains=target)
 			else:
 				#show all data
 				data = models.Event.objects.all()
@@ -228,8 +233,10 @@ def search_events(request):
 	if request.method == "POST":
 		#determine which search was used
 		nextpage = '/event/search/'
-		if request.POST.get('submit_name',None) == "Search Name":
+		if request.POST.get('submit_name',None) == "Search Event Name":
 			nextpage += 'name__' + request.POST.get('search_name','') + '/'
+		if request.POST.get('submit_user',None) == "Search User":
+			nextpage += 'user__' + request.POST.get('search_user','') + '/'
 		elif request.POST.get('submit_sport',None) == "Filter Sport":
 			nextpage += 'sport__' + request.POST.get('search_sport','') + '/'
 		elif request.POST.get('submit_zip',None) == "Search ZIP":
