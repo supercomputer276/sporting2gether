@@ -401,23 +401,20 @@ def reset_password(request):
 		if form.is_valid():
 			username = request.POST['username']
 			email_to = request.POST['email']
-			#check that email belongs to that user
+			#create new password
+			newpassword = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(9))
+			#set new password
 			check = User.objects.get(username=username)
-			if check.email == email_to:
-				#create new password
-				newpassword = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(9))
-				#set new password
-				check.set_password(newpassword)
-				check.save()
-				#send new password
-				subject = "Sporting2gether: password reset"
-				message = "Hello! You're receiving this email because your password at Sporting 2gether has been reset.\n\n" + "Your new password is \"" + newpassword + "\" (without the quotes, of course). Once you have logged in, we recommend changing your password to something more memorable from your Profile page.\n\n" + "Sincerely,\n" + "the Sporting2gether team"
-				send_mail(subject, message, from_email='sporting2gether@google.com', recipient_list=[email_to], fail_silently=False)
-				sentForm = True
-				
-			else:
-				return HttpResponse("Username and email do not match.")
+			check.set_password(newpassword)
+			check.save()
+			#send new password
+			subject = "Sporting2gether: password reset"
+			message = "Hello! You're receiving this email because your password at Sporting 2gether has been reset.\n\n" + "Your new password is \"" + newpassword + "\" (without the quotes, of course). Once you have logged in, we recommend changing your password to something more memorable from your Profile page.\n\n" + "Sincerely,\n" + "the Sporting2gether team"
+			send_mail(subject, message, from_email='sporting2gether@google.com', recipient_list=[email_to], fail_silently=False)
+			sentForm = True
 		else:
+			#form.addError(form.username,form._errors['no_user'])
+			#form.addError(form.email,form._errors['email_mismatch'])
 			print form.errors
 	else:
 		form = forms.PasswordResetForm()

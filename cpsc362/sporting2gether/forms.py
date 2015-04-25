@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from sporting2gether.models import Users, Event
+from django.db.models import Q
 
 class LoginForm(forms.Form):
 	username = forms.CharField(label='Username', max_length=30)
@@ -33,6 +34,22 @@ class CreateEventForm(forms.ModelForm):
 class PasswordResetForm(forms.Form):
 	username = forms.CharField(label='Username', max_length=30)
 	email = forms.EmailField(label='E-mail address', max_length=50, required=True)
+	
+	def is_valid(self):
+		valid = super(PasswordResetForm,self).is_valid()
+		if not valid:
+			return valid
+		#make sure username and e-mail correspond
+		try:
+			check = User.objects.get(Q(username=self.cleaned_data['username']))
+		except User.DoesNotExist:
+			self._errors['username'] = self.error_class(['User does not exist'])
+			return False
+		#check = User.objects.get(username=self.username)
+		if check.email != self.cleaned_data['email']:
+			self._errors['email'] = self.error_class(['User and Email do not match'])
+			return False
+		return True
 	
 class ProfileEditForm(forms.Form):
 	newfirstname = forms.CharField(label="First name", max_length=30, required=False)
