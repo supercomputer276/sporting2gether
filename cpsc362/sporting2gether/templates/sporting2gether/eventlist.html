@@ -1,5 +1,4 @@
 <a name="top"></a>
-<!--{{ filter }}-->
 <h1>
 {% if filter %}
 	{% if filter.lower == "my" %}
@@ -8,6 +7,8 @@
 		My Schedule
 	{% elif filter.lower == "today" %}
 		Events Happening Today or Later
+	{% elif filter.lower == "search" %}
+		Search Results: {{ searchtarget }}
 	{% else %}
 		Events
 	{% endif %}
@@ -16,7 +17,8 @@
 {% endif %}
 </h1>
 <!-- insert filter form here -->
-<form method="post" action="/search/?next={{ request.path }}" class="filterform">
+<form method="post" action="/event/performsearch/?next={{ request.path }}" class="filterform"> <!-- /event/performsearch/?next={{ request.path }} -->
+	{% csrf_token %}
 	<b>Filters</b><br/>
 	<button type="button" onClick="gotoPage('/event/all/')">All Events</button>
 	<button type="button" onClick="gotoPage('/event/my/')">My Events</button>
@@ -25,9 +27,14 @@
 	<!-- search forms; different ones depending on what to search -->
 	<!-- the view this form goes to performs the correct search and redirects back to the event view with the correct parameters -->
 	<br/><i>Search by:</i>
-	&lt;insert name/location search&gt;
-	&lt;insert sport filter&gt;
-	&lt;insert ZIP search&gt;
+	<input type="text" name="search_name" size="40" maxlength="50" /> <input type="submit" name="submit_name" value="Search Name"/>&nbsp;&nbsp;&nbsp;
+	<select name="search_sport">
+		<option value="" selected="selected">---------</option>
+		{% for c in CHOICES %}
+			<option value="{{ c.0 }}">{{ c.1 }}</option>
+		{% endfor %}
+	</select> <input type="submit" name="submit_sport" value="Filter Sport"/>&nbsp;&nbsp;&nbsp;
+	<input type="text" name="search_zip" size="5" maxlength="5" /> <input type="submit" name="submit_zip" value="Search ZIP"/>
 </form>
 <table width="100%">
 <tr><td colspan="2"><hr width="90%"/></td></tr>
@@ -68,7 +75,7 @@
 			{% endfor %}
 		)--></span></h3>
 		<p style="padding-left: 2em;">{{ e.description }}</p>
-		<p style="padding-left: 2em;"><i>Location:</i> {{ e.location_main }} in {{ e.location_city }}. ZIP: {{ e.location_zip }}</p>
+		<p style="padding-left: 2em;"><i>Location:</i> {{ e.location_main }} in {{ e.location_city }}. <i>ZIP:</i> {{ e.location_zip }}</p>
 		<p style="padding-left: 1em;"><a href="/event/view/{{ e.id }}/">Read More</a></p>
 	</td><td style="text-align:right;">
 		<p style="font-size:10pt;"><i>hosted by <a href="/profile/{{ e.creator.username }}/">{{ e.creator.username }}</a></i></p>

@@ -10,6 +10,7 @@ from sporting2gether import forms, models
 from cpsc362 import settings
 import string
 import random
+import re
 
 #Holds context data for every page; update context_dict in each method with this
 commonContext= {'login_form': forms.LoginForm(), 'DEBUG': settings.DEBUG,}
@@ -136,6 +137,8 @@ def create_event(request):
 def view_events(request,filter,searchterm):
 	context = RequestContext(request)
 	#build queryset
+	target = ''
+	sportchoices = models.Event.SPORT_CHOICES
 	if filter is not None:
 		if filter.lower() == "all":
 			data = models.Event.objects.all()
@@ -158,10 +161,23 @@ def view_events(request,filter,searchterm):
 			#event search
 			if searchterm is not None:
 				#searchterm verified
-				#filter by sport if searchterm one of the four-letter abbreviations
-				#filter by ZIP code if searchterm is a five-digit number
-				#otherwise filter by name and/or location
-				data = models.Event.objects.all() #temporary
+				#filter by sport if searchterm is "sport__" + one of the four-letter abbreviations
+				#filter by ZIP code if searchterm is "zip__" + a five-digit number
+				#otherwise filter by name and/or location (force this search if it starts with "name__")
+				if re.match(r'name__\w*',searchterm):
+					target = searchterm.replace('name__','')
+					data = models.Event.objects.filter(title__contains=target)
+				elif re.match(r'sport__\w\w\w\w$',searchterm):
+					target = searchterm.replace('sport__','')
+					data = models.Event.objects.filter(category=target)
+					for c in sportchoices:
+						if c[0] == target:
+							target = c[1]
+				elif re.match(r'zip__\d\d\d\d\d$',searchterm):
+					target = searchterm.replace('zip__','')
+					data = models.Event.objects.filter(location_zip=target)
+				else:
+					data = models.Event.objects.all() #temporary
 			else:
 				#show all data
 				data = models.Event.objects.all()
@@ -200,11 +216,27 @@ def view_events(request,filter,searchterm):
 			text += " until event"
 		timeleft += [text]
 	#END time until
-	sportchoices = models.Event.SPORT_CHOICES
 	context_dict = {'page_title': 'Events', 'page_template': 'sporting2gether/eventlist.html',
-		'data': data, 'data_number': data_number, 'CHOICES': sportchoices, 'timeleft': timeleft, 'filter': filter}
+		'data': data, 'data_number': data_number, 'CHOICES': sportchoices, 'timeleft': timeleft, 'filter': filter, 'searchtarget': target}
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
+
+def search_events(request):
+	#store next page from GET
+	nextpage = request.GET.get('next','/event/all')
+	#search via POST
+	if request.method == "POST":
+		#determine which search was used
+		nextpage = '/event/search/'
+		if request.POST.get('submit_name',None) == "Search Name":
+			nextpage += 'name__' + request.POST.get('search_name','') + '/'
+		elif request.POST.get('submit_sport',None) == "Filter Sport":
+			nextpage += 'sport__' + request.POST.get('search_sport','') + '/'
+		elif request.POST.get('submit_zip',None) == "Search ZIP":
+			nextpage += 'zip__' + request.POST.get('search_zip','') + '/'
+		return HttpResponseRedirect(nextpage)
+	else:
+		return HttpResponseRedirect(nextpage)
 
 def event_detail(request, eventid):
 	context = RequestContext(request)
@@ -275,7 +307,6 @@ def edit_event(request, eventid):
 
 @login_required
 def join_event(request, eventid):
-	context = RequestContext(request)
 	#get relevant event
 	thisevent = models.Event.objects.get(id=eventid)
 	#check whether or not the user's ID is already in this page; add or remove as necessary
