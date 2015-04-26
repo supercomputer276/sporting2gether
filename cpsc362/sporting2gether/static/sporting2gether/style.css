@@ -3,34 +3,38 @@ body {
 	font-family:Arial;
 }
 
+a {
+	text-decoration: none;
+	color: #3b5998;
+	text-align: center;
+}
+
+a:hover {
+	background: #819CD3;
+}
+
+a:visited {
+	color: #203354;
+}
+
 .siteheader {
-	/*background: #FDFDFD;*/
 	width: 100%;
-	height: 20px; /* make sure it matches the content's padding-top */
-	padding-top: 2px;
+	height: 1.25em;
+	padding-top: 0.2em;
 	padding-left: 1em;
 	padding-right: 1em;
-	/*border-bottom: 2px solid #DADADA;
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 1;*/
 }
 
 .siteheader-logo {
 	float: left;
 	text-align: left;
-	display:block;
+	display: block;
 }
 
 .siteheader-login {
 	float: right;
 	text-align: right;
-	/*background: #B24400;*/
-	/*background-color: #f7f7f7;*/
-	/*height: 70%;
-	width: 230px;*/
-	height: 20px;
+	height: 1.25em;
 	padding-top: 0px;
 	padding-bottom: 0px;
 	padding-right: 1em;
@@ -41,9 +45,9 @@ body {
 .siteheader-search {
 	float: center;
 	text-align: center;
-	padding-top: 5px;
+	padding-top: 0.3125em;
 	padding-bottom: 0px;
-	margin: 5px 1em;
+	margin: 0.3125em 1em;
 }
 
 .menu {
@@ -60,7 +64,6 @@ body {
 .menu li {
 	float:left;
 	padding-left: 2em;
-	/*padding-right: 10px;*/
 	text-align:center;
 	line-height:2.5em;
 	color:#FFFFFF;
@@ -77,10 +80,9 @@ body {
 }
 
 .content {
-	/*padding-top: 50px; /* make sure it matches the height of the header par */
 	background-color: #d8dfea;
 	width: auto;
-	margin: 10px;
+	margin: 0.625em;
 	padding: 0.5em 1em;
 }
 
@@ -92,7 +94,7 @@ body {
 	background-color: #819CD3;
 	color: white;
 	text-align: center;
-	padding: 2px;
+	padding: 0.2em;
 	width: 100%;
 }
 
@@ -106,22 +108,13 @@ body {
 }
 
 .sitefooter {
-	/*background: #BDBDBD;
-	width: 100%;
-	height: 75px;*/
-	padding-top: 2px;
+	padding-top: 0.2em;
 	padding-left: 1em;
 	padding-right: 1em;
-	/*border-top: 2px solid #DBDBDB;
-	position: fixed;
-	bottom: 0px;
-	left: 0;
-	z-index: 1;*/
 	background-color:#6d84b4;
-	height: auto; /*20px;*/
+	height: auto;
 	width: auto;
 	float: center;
 	text-align: center;
-	/*font-family:Arial;*/
 	color:#FFFFFF;
 }
