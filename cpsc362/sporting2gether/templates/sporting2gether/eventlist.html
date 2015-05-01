@@ -68,7 +68,12 @@
 					{{ c.1 }}
 				{% endif %}
 			{% endfor %}
-		on {{ e.start_datetime }} <!--(
+		{% if e.end_datetime %}
+		from {{ e.start_datetime }} to {{ e.end_datetime }}
+		{% else %}
+		on {{ e.start_datetime }}
+		{% endif %}
+		<!--(
 			{% for t in timeleft %}
 				{% if forloop.counter == e.id %}
 					{{ t }}

@@ -2,7 +2,7 @@
 <p>Your event has been created! <a href="/">Return to the front page.</a></p>
 {% else %}
 <h1>Create New Event</h1>
-<p>All fields are required.</p>
+<p>All fields except ending date and time are required.</p>
 <form action="/createevent/" method="post">
     {% csrf_token %}
     {{ form.as_p }}

@@ -9,11 +9,12 @@
 	</h1>
 	<table class="filterform">
 		<tr style="font-weight:bold;">
-			<td width="20%"><label for="category">Sport</label></td>
-			<td width="20%"><label for="start_datetime">Start Date &amp; Time</label></td>
-			<td width="20%"><label for="location_main">Address</label></td>
-			<td width="20%"><label for="location_city">City</label></td>
-			<td width="20%"><label for="location_zip">ZIP Code</label></td>
+			<td width="{{ percentbar }}%"><label for="category">Sport</label></td>
+			<td width="{{ percentbar }}%"><label for="start_datetime">Start Date &amp; Time</label></td>
+			<td width="{{ percentbar }}%"><label for="end_datetime">End Date &amp; Time</label></td>
+			<td width="{{ percentbar }}%"><label for="location_main">Address</label></td>
+			<td width="{{ percentbar }}%"><label for="location_city">City</label></td>
+			<td width="{{ percentbar }}%"><label for="location_zip">ZIP Code</label></td>
 		</tr><tr>
 			<td><select id="category" name="category">
 				<option value="">---------</option>
@@ -21,12 +22,14 @@
 					<option value="{{ c.0 }}" {% if thisevent.category == c.0 %}selected="selected"{% endif %}>{{ c.1 }}</option>
 				{% endfor %}
 			</select></td>
-			<td><input type="text" id="start_datetime" name="start_datetime" size="15" value="{{ timevalue }}" required="required"/></td>
+			<td><input type="text" id="start_datetime" name="start_datetime" size="15" value="{{ timevalue1 }}" required="required"/></td>
+			<td><input type="text" id="end_datetime" name="end_datetime" size="15" {% if timevalue2 %}value="{{ timevalue2 }}"{% endif %}/></td>
 			<td><input type="text" id="location_main" name="location_main" size="30" maxlength="50" value="{{ thisevent.location_main }}" required="required"/></td>
 			<td><input type="text" id="location_city" name="location_city" size="20" maxlength="25" value="{{ thisevent.location_city }}" required="required"/></td>
 			<td><input type="text" id="location_zip" name="location_zip" size="5" maxlength="5" value="{{ thisevent.location_zip }}" required="required"/></td>
 		</tr><tr>
 			<td></td>
+			<td>YYYY-MM-DD HH:MM<br/>(24-hour clock)</td>
 			<td>YYYY-MM-DD HH:MM<br/>(24-hour clock)</td>
 			<td></td>
 			<td></td>

@@ -2,11 +2,12 @@
 <h1 style="text-align:center;">{{ thisevent.title }}</h1>
 <table class="filterform">
 	<tr style="font-weight:bold;">
-		<td width="20%">Sport</td>
-		<td width="20%">Start Date &amp; Time</td>
-		<td width="20%">Address</td>
-		<td width="20%">City</td>
-		<td width="20%">ZIP Code</td>
+		<td width="{{ percentbar }}%">Sport</td>
+		<td width="{{ percentbar }}%">Start Date &amp; Time</td>
+		{% if thisevent.end_datetime %} <td width="{{ percentbar }}%">End Date &amp; Time</td> {% endif %}
+		<td width="{{ percentbar }}%">Address</td>
+		<td width="{{ percentbar }}%">City</td>
+		<td width="{{ percentbar }}%">ZIP Code</td>
 	</tr><tr>
 		<td>{% for c in CHOICES %}
 				{% if c.0 == thisevent.category %}
@@ -14,6 +15,7 @@
 				{% endif %}
 			{% endfor %}</td>
 		<td>{{ thisevent.start_datetime }}</td>
+		{% if thisevent.end_datetime %} <td width="20%">{{ thisevent.end_datetime }}</td> {% endif %}
 		<td>{{ thisevent.location_main }}</td>
 		<td>{{ thisevent.location_city }}</td>
 		<td>{{ thisevent.location_zip }}</td>

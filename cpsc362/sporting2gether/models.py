@@ -5,6 +5,7 @@ from datetime import datetime
 class Users(models.Model):
 	user = models.OneToOneField(User)
 	phone_no = models.CharField(max_length=10,verbose_name="Phone # (digits)",blank=True)
+	show_email = models.BooleanField(default=False)
 	def __unicode__(self):
 		return self.user.username
 
@@ -37,7 +38,8 @@ class Event(models.Model):
 	title = models.CharField(max_length=50)
 	creator = models.ForeignKey(User, related_name='event_creator')
 	description = models.TextField()
-	start_datetime = models.DateTimeField(verbose_name="Date & Time")
+	start_datetime = models.DateTimeField(verbose_name="Staring Date & Time")
+	end_datetime = models.DateTimeField(verbose_name="Ending Date & Time", blank=True, null=True)
 	capacity = models.PositiveIntegerField()
 	category = models.CharField(max_length=4, choices=SPORT_CHOICES, verbose_name="Sport")
 	location_main = models.CharField(max_length=50, verbose_name="Address")
@@ -46,7 +48,7 @@ class Event(models.Model):
 	participants = models.ManyToManyField(User, related_name='event_players')
 	is_cancelled = models.BooleanField(default=False)
 	def __str__(self):
-		return "Event: " + self.title
+		return self.title
 	
 	def getDateTime(self):
 		return datetime.combine(self.start_datetime.date(),self.start_datetime.time())

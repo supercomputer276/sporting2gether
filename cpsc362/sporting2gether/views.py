@@ -113,11 +113,18 @@ def create_event(request):
 		form = forms.CreateEventForm(request.POST)
 		if form.is_valid():
 			#process form
+			print request.POST
 			e = models.Event()
 			e.title = request.POST['title']
 			e.description = request.POST['description']
 			e.creator = request.user
 			e.start_datetime = request.POST['start_datetime']
+			#e.start_datetime = e.start_datetime.strftime("%Y-%m-%d %H:%M")
+			if request.POST['end_datetime'] != '':
+				e.end_datetime = request.POST['end_datetime']
+			else:
+				e.end_datetime = None
+			#e.end_datetime = e.end_datetime.strftime("%Y-%m-%d %H:%M")
 			e.capacity = request.POST['capacity']
 			e.category = request.POST['category']
 			e.location_main = request.POST['location_main']
@@ -265,8 +272,14 @@ def event_detail(request, eventid):
 	joined = False
 	if request.user.is_authenticated():
 		joined = request.user in thisevent.participants.all()
+	#get width of data bar cells
+	if thisevent.end_datetime is not None:
+		numbar = 6
+	else:
+		numbar = 5
+	percentbar = 100 / numbar
 	context_dict = {'page_title': 'Event Detail - ' + thisevent.title, 'page_template': 'sporting2gether/eventdetail.html',
-		'thisevent': thisevent, 'CHOICES': sportchoices, 'errormsg': errormsg, 'joined': joined,}
+		'thisevent': thisevent, 'CHOICES': sportchoices, 'errormsg': errormsg, 'joined': joined, 'percentbar': percentbar}
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
 
@@ -277,7 +290,12 @@ def edit_event(request, eventid):
 	thisevent = models.Event.objects.get(id=eventid)
 	sportchoices = models.Event.SPORT_CHOICES
 	#translate start_datetime
-	timevalue =  thisevent.start_datetime.strftime("%Y-%m-%d %H:%M")
+	timevalue1 = thisevent.start_datetime.strftime("%Y-%m-%d %H:%M")
+	if thisevent.end_datetime is not None:
+		timevalue2 = thisevent.end_datetime.strftime("%Y-%m-%d %H:%M")
+	else:
+		timevalue2 = ''
+	percentbar = 100 / 6
 	#process form
 	errormsg = ''
 	sentForm = False
@@ -288,6 +306,12 @@ def edit_event(request, eventid):
 			thisevent.title = request.POST.get('title',thisevent.title)
 			thisevent.description = request.POST.get('description',thisevent.description)
 			thisevent.start_datetime = request.POST.get('start_datetime',thisevent.start_datetime)
+			#thisevent.start_datetime = thisevent.start_datetime.strftime("%Y-%m-%d %H:%M")
+			if request.POST['end_datetime']  != '':
+				thisevent.end_datetime = request.POST.get('end_datetime',thisevent.end_datetime)
+				#thisevent.end_datetime = thisevent.end_datetime.strftime("%Y-%m-%d %H:%M")
+			else:
+				thisevent.end_datetime = None;
 			thisevent.category = request.POST.get('category',thisevent.category)
 			thisevent.location_main = request.POST.get('location_main',thisevent.location_main)
 			thisevent.location_city = request.POST.get('location_city',thisevent.location_city)
@@ -308,7 +332,8 @@ def edit_event(request, eventid):
 	else:
 		form = forms.EventEditForm(thisevent)
 	context_dict = {'page_title': 'Event Edit - ' + thisevent.title, 'page_template': 'sporting2gether/eventedit.html',
-		'thisevent': thisevent, 'CHOICES': sportchoices, 'timevalue': timevalue, 'form': form, 'errormsg': errormsg}
+		'thisevent': thisevent, 'CHOICES': sportchoices, 'timevalue1': timevalue1, 'timevalue2': timevalue2,
+		'percentbar': percentbar, 'form': form, 'errormsg': errormsg}
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
 
