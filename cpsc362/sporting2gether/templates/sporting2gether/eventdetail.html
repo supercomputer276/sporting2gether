@@ -29,7 +29,11 @@
 		<p>
 			<b>Host:</b><br/><a href="/profile/{{ thisevent.creator}}/">{{ thisevent.creator }}</a>
 			{% if user == thisevent.creator %}
-				<br/><a href="/event/edit/{{ thisevent.id }}/">Edit event details</a>
+				{% if canEdit == 1 %}
+					<br/><a href="/event/edit/{{ thisevent.id }}/">Edit event details</a>
+				{% else %}
+					<br/>You cannot edit events in the past.
+				{% endif %}
 			{% endif %}
 		</p>
 		{{ errormsg | safe }}
@@ -39,7 +43,8 @@
 			{% if thisevent.participants.count >= thisevent.capacity %}
 				<p>This event is full.</p>
 			{% elif user.is_authenticated %}
-				{% if joined %}
+				{% if user == thisevent.creator %}
+				{% elif joined %}
 					<p><a href="/event/join/{{ thisevent.id }}/">Leave this event</a></p>
 				{% else %}
 					<p><a href="/event/join/{{ thisevent.id }}/">Join this event</a></p>

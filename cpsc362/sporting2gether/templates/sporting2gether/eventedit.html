@@ -61,7 +61,7 @@
 				{% for p in thisevent.participants.all %}
 				<tr>
 					<td><label for="kick_{{ p }}">{{ p }}</label></td>
-					<td><input type="checkbox" id="kick_{{ p }}" name="kick" value="{{ forloop.counter }}"/></td>
+					<td><input type="checkbox" id="kick_{{ p }}" name="kick" value="{{ p.id }}"/></td>
 				</tr>
 				{% endfor %}
 				<tr><td colspan="2" style="font-size:10pt; text-align:center;">Capacity will adjust up to no. of participants if set less than that number.</td></tr>

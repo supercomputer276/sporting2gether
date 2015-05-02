@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from datetime import datetime, timedelta
+from django.utils import timezone
 from sporting2gether import forms, models
 from cpsc362 import settings
 import string
@@ -119,12 +120,12 @@ def create_event(request):
 			e.description = request.POST['description']
 			e.creator = request.user
 			e.start_datetime = request.POST['start_datetime']
-			#e.start_datetime = e.start_datetime.strftime("%Y-%m-%d %H:%M")
+			#e.start_datetime = e.start_datetime.strftime("%Y-%m-%d %H:%M:%S")
 			if request.POST['end_datetime'] != '':
 				e.end_datetime = request.POST['end_datetime']
 			else:
 				e.end_datetime = None
-			#e.end_datetime = e.end_datetime.strftime("%Y-%m-%d %H:%M")
+			#e.end_datetime = e.end_datetime.strftime("%Y-%m-%d %H:%M:%S")
 			e.capacity = request.POST['capacity']
 			e.category = request.POST['category']
 			e.location_main = request.POST['location_main']
@@ -272,6 +273,13 @@ def event_detail(request, eventid):
 	joined = False
 	if request.user.is_authenticated():
 		joined = request.user in thisevent.participants.all()
+	#get editability (-1: not owner; 0: past date; 1: can edit)
+	canEdit = -1
+	if request.user.is_authenticated():
+		if thisevent.start_datetime >= timezone.now():
+			canEdit = 1
+		else:
+			canEdit = 0
 	#get width of data bar cells
 	if thisevent.end_datetime is not None:
 		numbar = 6
@@ -279,7 +287,7 @@ def event_detail(request, eventid):
 		numbar = 5
 	percentbar = 100 / numbar
 	context_dict = {'page_title': 'Event Detail - ' + thisevent.title, 'page_template': 'sporting2gether/eventdetail.html',
-		'thisevent': thisevent, 'CHOICES': sportchoices, 'errormsg': errormsg, 'joined': joined, 'percentbar': percentbar}
+		'thisevent': thisevent, 'CHOICES': sportchoices, 'errormsg': errormsg, 'joined': joined, 'percentbar': percentbar, 'canEdit': canEdit}
 	context_dict.update(commonContext)
 	return render_to_response('sporting2gether/page.html', context_dict, context_instance=context)
 
@@ -289,27 +297,23 @@ def edit_event(request, eventid):
 	#get relevant event
 	thisevent = models.Event.objects.get(id=eventid)
 	sportchoices = models.Event.SPORT_CHOICES
-	#translate start_datetime
-	timevalue1 = thisevent.start_datetime.strftime("%Y-%m-%d %H:%M")
-	if thisevent.end_datetime is not None:
-		timevalue2 = thisevent.end_datetime.strftime("%Y-%m-%d %H:%M")
-	else:
-		timevalue2 = ''
 	percentbar = 100 / 6
 	#process form
 	errormsg = ''
 	sentForm = False
 	if request.method == "POST":
 		form = forms.EventEditForm(thisevent,request.POST)
+		print '---FLAG 1---'
 		if form.is_valid():
+			print '---FLAG 2---'
 			#save changes (except capacity)
 			thisevent.title = request.POST.get('title',thisevent.title)
 			thisevent.description = request.POST.get('description',thisevent.description)
 			thisevent.start_datetime = request.POST.get('start_datetime',thisevent.start_datetime)
-			#thisevent.start_datetime = thisevent.start_datetime.strftime("%Y-%m-%d %H:%M")
+			#thisevent.start_datetime = thisevent.start_datetime.strftime("%Y-%m-%d %H:%M:%S")
 			if request.POST['end_datetime']  != '':
 				thisevent.end_datetime = request.POST.get('end_datetime',thisevent.end_datetime)
-				#thisevent.end_datetime = thisevent.end_datetime.strftime("%Y-%m-%d %H:%M")
+				#thisevent.end_datetime = thisevent.end_datetime.strftime("%Y-%m-%d %H:%M:%S")
 			else:
 				thisevent.end_datetime = None;
 			thisevent.category = request.POST.get('category',thisevent.category)
@@ -331,6 +335,25 @@ def edit_event(request, eventid):
 			errormsg = form.errors
 	else:
 		form = forms.EventEditForm(thisevent)
+	#translate start_datetime
+	#print '---'
+	#print "start_datetime (raw):       " + thisevent.start_datetime.__str__()
+	#print "end_datetime (raw):         " + thisevent.end_datetime.__str__()
+	try:
+		timevalue1 = thisevent.start_datetime.strftime("%Y-%m-%d %H:%M")
+	except AttributeError:
+		timevalue1 = thisevent.start_datetime
+	if thisevent.end_datetime is not None:
+		try:
+			timevalue2 = thisevent.end_datetime.strftime("%Y-%m-%d %H:%M")
+		except AttributeError:
+			timevalue2 = thisevent.end_datetime
+	else:
+		timevalue2 = ''
+	#print "start_datetime (processed): " + timevalue1
+	#print "end_datetime (processed):   " + timevalue2
+	#print '---'
+	#footer
 	context_dict = {'page_title': 'Event Edit - ' + thisevent.title, 'page_template': 'sporting2gether/eventedit.html',
 		'thisevent': thisevent, 'CHOICES': sportchoices, 'timevalue1': timevalue1, 'timevalue2': timevalue2,
 		'percentbar': percentbar, 'form': form, 'errormsg': errormsg}
@@ -397,13 +420,16 @@ def edit_profile(request):
 				thing = data.user
 				if form.cleaned_data['newphone'] != '':
 					data.phone_no = request.POST.get('newphone',data.phone_no)
-					data.save()
 				if form.cleaned_data['newfirstname'] != '':
 					thing.first_name = request.POST.get('newfirstname',thing.first_name)
-					thing.save()
 				if form.cleaned_data['newpassword'] != '':
 					thing.set_password(request.POST['newpassword'])
-					thing.save()
+				if form.cleaned_data['newshowemail'] is not None:
+					data.show_email = True
+				else:
+					data.show_email = False
+				thing.save()
+				data.save()
 				return HttpResponseRedirect('/profile/my/')
 			else:
 				wrongpasswordflag = True

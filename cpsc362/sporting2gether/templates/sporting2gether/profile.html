@@ -10,7 +10,7 @@
 {% endif %}
 </h1>
 {% if entry %}
-	{% if entry.lower == user.username %}
+	{% if entry.lower == user.username.lower %}
 		<p><a href="/profile/edit/">Edit</a></p>
 	{% endif %}
 {% endif %}
@@ -20,16 +20,23 @@
 	<td>Username</td>
     <td>{{ data.user.username }}</td>
 </tr>
+{% if user.is_authenticated %}
+	{% if data.show_email %}
 <tr>
 	<td>Email Address</td>
     <td>{{ data.user.email }}</td>
 </tr>
+	{% endif %}
+{% endif %}
 <tr>
 	<td>First Name</td>
     <td>{{ data.user.get_short_name }}</td>
 </tr>
+{% if user.is_authenticated %}
 <tr>
 	<td>Phone number</td>
     <td>{{ data.phone_no }}</td>
 </tr>
+{% endif %}
 </table>
+<h2 style="text-align:center;"><a href="/event/search/user__{{ data.user.username }}">View This User's Events</a></h2>

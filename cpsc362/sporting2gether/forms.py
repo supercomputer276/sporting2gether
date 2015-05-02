@@ -105,10 +105,14 @@ class ProfileEditForm(forms.Form):
 	newfirstname = forms.CharField(label="First name", max_length=30, required=False)
 	newpassword = forms.CharField(label='New password', widget=forms.PasswordInput(), max_length=128, required=False, help_text="If you change your password, you will have to log back in after submitting your changes")
 	newphone = forms.CharField(label="Phone # (digits)", max_length=10, required=False)
+	newshowemail = forms.BooleanField(label="Show e-mail to other users?", required=False)
 	confirmpassword = forms.CharField(label='Enter current password', widget=forms.PasswordInput(), max_length=128)
 
 class EventEditForm(forms.ModelForm):
 	start_datetime = forms.CharField(label='Date & Time', help_text='YYYY-MM-DD HH:MM (24-hour clock)')
+	end_datetime = forms.CharField(label='End Date & Time',
+		#widget=DateTimePickerWidget(),
+		help_text='YYYY-MM-DD HH:MM (24-hour clock)', required=False)#widget=forms.SplitDateTimeWidget(),
 	#kick = forms.MultipleChoiceField(choices=, label='', required=False)
 	
 	def __init__(self, thisevent, *args, **kwargs):
@@ -119,10 +123,11 @@ class EventEditForm(forms.ModelForm):
 		valid = super(EventEditForm,self).is_valid()
 		if not valid:
 			return valid
+		print '---FLAG 3---'
 		#events must start in the future (after / greater than now); as well, end time (if set) must be after start time
 		starttime = datetime.strptime(self.cleaned_data['start_datetime'], "%Y-%m-%d %H:%M")
 		if self.cleaned_data['end_datetime'] == '':
-			endtime = startttime
+			endtime = starttime
 		elif self.cleaned_data['end_datetime'] is None:
 			endtime = starttime
 		else:
